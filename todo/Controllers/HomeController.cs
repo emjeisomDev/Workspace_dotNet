@@ -47,5 +47,18 @@ namespace todo.Controllers
             return Ok(model);
         }
 
+        [HttpDelete("/{id:int}")]
+        public IActionResult Delete([FromRoute] int id, [FromServices] DataContext context)
+        {
+            var todo = context.Todos.FirstOrDefault(x => x.Id == id);
+            if (todo == null)
+                return NotFound();
+
+            context.Todos.Remove(todo);
+            context.SaveChanges();
+
+            return Ok($"Deleted todo: {todo.Id} - {todo.Title}");
+        }
+
     }
 }
