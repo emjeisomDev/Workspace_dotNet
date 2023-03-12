@@ -27,9 +27,25 @@ namespace todo.Controllers
         {
             context.Todos.Add(todo);
             context.SaveChanges();
-            return Ok(todo);
+            return Created($"/{todo.Id}", todo); ;
         }
-        
+
+        [HttpPut("/{id:int}")]
+        public IActionResult Put([FromRoute] int id, [FromBody] TodoModel todo, [FromServices] DataContext context)
+        {
+            var model = context.Todos.FirstOrDefault(x => x.Id == id);
+            if (model == null)
+                return NotFound();
+
+            model.Title = todo.Title;
+            model.Description = todo.Description;
+            model.Done = todo.Done;
+
+            context.Todos.Update(model);
+            context.SaveChanges();
+
+            return Ok(model);
+        }
 
     }
 }
