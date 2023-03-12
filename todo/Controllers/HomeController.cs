@@ -21,6 +21,14 @@ namespace todo.Controllers
 
             return Ok(todos);
         }
+
+        [HttpPost("/")]
+        public IActionResult Post([FromServices] DataContext context, [FromBody] TodoModel todo)
+        {
+            context.Todos.Add(todo);
+            context.SaveChanges();
+            return Ok(todo);
+        }
         
 
     }
