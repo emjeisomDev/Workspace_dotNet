@@ -16,15 +16,15 @@ namespace Blog.Controllers
             try
             {
                 var categories = await context.Categories.ToListAsync();
-                return Ok(categories);
+                return Ok(new ResultViewModel<List<Category>>(categories));
             }
             catch (DbUpdateException ex)
             {
-                return StatusCode(500, "05XE01 - It wasn't possible get the categories!");
+                return StatusCode(500, new ResultViewModel<List<Category>>("05XE01 - It wasn't possible get the categories!"));
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "05XE06 - Internal fail on server!");
+                return StatusCode(500, new ResultViewModel<List<Category>>("05XE06 - Internal fail on server!"));
             }
         }
 
