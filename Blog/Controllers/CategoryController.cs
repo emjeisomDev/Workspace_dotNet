@@ -1,4 +1,5 @@
 ﻿using Blog.Data;
+using Blog.Extensions;
 using Blog.Models;
 using Blog.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -40,17 +41,17 @@ namespace Blog.Controllers
 
                 if (category == null)
                 {
-                    return NotFound();
+                    return NotFound(new ResultViewModel<Category>("Content not found!"));
                 }
-                return Ok(category);
+                return Ok(new ResultViewModel<Category>(category));
             }
             catch (DbUpdateException ex)
             {
-                return StatusCode(500, "05XE02 - It wasn't possible get the category!");
+                return StatusCode(500, new ResultViewModel<List<Category>>("05XE02 - It wasn't possible get the category!"));
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "05XE06 - Internal fail on server!");
+                return StatusCode(500, new ResultViewModel<List<Category>>("05XE06 - Internal fail on server!"));
             }
         }
 
@@ -61,7 +62,7 @@ namespace Blog.Controllers
         )
         {
             if (!ModelState.IsValid)
-                return BadRequest();
+                return BadRequest(new ResultViewModel<Category>(ModelState.GetErrors()));
 
             try
             {
@@ -73,15 +74,15 @@ namespace Blog.Controllers
                 };
                 await context.Categories.AddAsync(category);
                 await context.SaveChangesAsync();
-                return Created($"/{category.Id}", category);
+                return Created($"/{category.Id}", new ResultViewModel<Category>(category));
             }
             catch (DbUpdateException ex)
             {
-                return StatusCode(500, "05XE03 - It wasn't possible include the category!");
+                return StatusCode(500, new ResultViewModel<Category>("05XE03 - It wasn't possible include the category!"));
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "05XE06 - Internal fail on server!");
+                return StatusCode(500, new ResultViewModel<Category>("05XE06 - Internal fail on server!"));
             }
 
         }
@@ -102,7 +103,7 @@ namespace Blog.Controllers
                 var category = await context.Categories.FirstOrDefaultAsync(x => x.Id == id);
 
                 if (category == null)
-                    return NotFound();
+                    return NotFound(new ResultViewModel<Category>("Content not found!"));
 
                 category.Name = model.Name;
                 category.Slug = model.Slug;
@@ -110,15 +111,15 @@ namespace Blog.Controllers
                 context.Categories.Update(category);
                 await context.SaveChangesAsync();
 
-                return Ok();
+                return Ok(new ResultViewModel<Category>(category));
             }
             catch (DbUpdateException ex)
             {
-                return StatusCode(500, "05XE04 - It wasn't possible update the category!");
+                return StatusCode(500, new ResultViewModel<Category>("05XE04 - It wasn't possible update the category!"));
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "05XE06 - Internal fail on server!");
+                return StatusCode(500, new ResultViewModel<Category>("05XE06 - Internal fail on server!"));
             }
         }
 
@@ -133,20 +134,20 @@ namespace Blog.Controllers
                 var category = await context.Categories.FirstOrDefaultAsync(x => x.Id == id);
 
                 if (category == null)
-                    return NotFound();
+                    return NotFound(new ResultViewModel<Category>(ModelState.GetErrors()));
 
                 context.Categories.Remove(category);
                 await context.SaveChangesAsync();
 
-                return Ok(category);
+                return Ok(new ResultViewModel<Category>(category));
             }
             catch (DbUpdateException ex)
             {
-                return StatusCode(500, "05XE05 - It wasn't possible delete the category!");
+                return StatusCode(500, new ResultViewModel<Category>("05XE05 - It wasn't possible delete the category!"));
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "05XE06 - Internal fail on server!");
+                return StatusCode(500, new ResultViewModel<Category>("05XE06 - Internal fail on server!"));
             }
         }
 
